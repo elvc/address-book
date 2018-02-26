@@ -1,7 +1,35 @@
 import React, { Component } from 'react';
 import { createApolloFetch } from 'apollo-fetch';
-import logo from './logo.svg';
-import './App.css';
+import styled, { injectGlobal } from 'styled-components';
+import ContactListItems from '../src/Components/ContactListItems';
+import ContactDetails from '../src/Components/ContactDetails';
+
+// Styled-Components
+const AppContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 700px;
+  height: 500px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
+
+const AppHeaderWrapper = styled.header``;
+const AppHeader = styled.h1`
+  text-align: center;
+`;
+
+const AddressBookWrapper = styled.div`
+  display: flex;
+  border: 1px grey solid;
+`;
+
+const ContactListWrapper = styled.div`
+  padding: 1rem;
+  border-right: 1px grey solid;
+`;
 
 const fetch = createApolloFetch({
   uri: 'http://localhost:4000/graphql',
@@ -17,7 +45,7 @@ class App extends Component {
 
   getAllContacts = () => {
     fetch({
-      query: `{contacts {
+      query: `{getAllContacts {
       contactId
       firstName
       lastName
@@ -27,7 +55,7 @@ class App extends Component {
     }}`,
     }).then(res => {
       this.setState({
-        contacts: res.data.contacts,
+        contacts: res.data.getAllContacts,
       });
     });
   };
@@ -46,43 +74,37 @@ class App extends Component {
       });
     });
   };
+
   componentDidMount() {
     this.getAllContacts();
-    // this.getContactbyId(1);
-    // You can also easily pass variables for dynamic arguments
-    // fetch({
-    //   query: `query PostsForAuthor($id: Int!) {
-    //     author(id: $id) {
-    //       firstName
-    //       posts {
-    //         title
-    //         votes
-    //       }
-    //     }
-    //   }`,
-    //   variables: { id: 1 },
-    // }).then(res => {
-    //   console.log(res.data);
-    // });
   }
+
   render() {
     console.log(this.state);
+    const { contacts } = this.state;
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Address Book</h1>
-        </header>
-        <div className="App-intro">
-          <div>GraphQL port: 4000</div>
-          <div>First Name: {this.state.firstName}</div>
-          <div>Last Name: {this.state.lastName}</div>
-          <div>Email: {this.state.email}</div>
-          <div>Phone: {this.state.phone}</div>
-        </div>
-      </div>
+      <AppContainer>
+        <AppHeaderWrapper>
+          <AppHeader>Address Book</AppHeader>
+        </AppHeaderWrapper>
+        <AddressBookWrapper>
+          <ContactListWrapper>
+            <ContactListItems contacts={contacts} />
+          </ContactListWrapper>
+          <ContactDetails contact={contacts[0]} />
+        </AddressBookWrapper>
+      </AppContainer>
     );
   }
 }
 
 export default App;
+
+// Global style
+// eslint-disable-next-line
+injectGlobal`
+  * {
+    margin: 0;
+    padding: 0;
+  }
+`;

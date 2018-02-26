@@ -42,7 +42,7 @@ const contactsData = [
 // GraphQL schema
 const schema = buildSchema(`
     type Query {
-        contact(contactId: Int!): Contact
+        getContacts(firstName: String!): [Contact]
         getAllContacts: [Contact]
     },
     type Mutation {
@@ -58,8 +58,8 @@ const schema = buildSchema(`
     }
 `);
 
-const getContact = args =>
-  contactsData.filter(contact => contact.firstName === args.firstName);
+const getContacts = ({ firstName }) =>
+  contactsData.filter(contact => contact.firstName === firstName);
 
 const getAllContacts = () => contactsData;
 
@@ -76,7 +76,7 @@ const addNewContact = ({ firstName, lastName, email, phone, address }) => {
 };
 
 const root = {
-  contact: getContact,
+  getContacts: getContacts,
   getAllContacts: getAllContacts,
   addNewContact: addNewContact,
 };
