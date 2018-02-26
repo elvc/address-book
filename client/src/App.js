@@ -60,21 +60,6 @@ class App extends Component {
     });
   };
 
-  //To-Do
-  getContactbyId = id => {
-    fetch({
-      query: `query Contact($id: Int!) {
-        contact(contactId: $id) {
-          firstName
-        }`,
-      variables: { id },
-    }).then(res => {
-      this.setState({
-        contacts: res.data.contacts,
-      });
-    });
-  };
-
   componentDidMount() {
     this.getAllContacts();
   }

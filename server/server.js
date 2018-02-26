@@ -42,6 +42,7 @@ const contactsData = [
 // GraphQL schema
 const schema = buildSchema(`
     type Query {
+        getContactById(contactId: Int!): Contact
         getContacts(firstName: String!): [Contact]
         getAllContacts: [Contact]
     },
@@ -58,8 +59,17 @@ const schema = buildSchema(`
     }
 `);
 
-const getContacts = ({ firstName }) =>
-  contactsData.filter(contact => contact.firstName === firstName);
+const getContactById = ({ contactId }) => {
+  const result = contactsData.find(contact => contact.contactId === contactId);
+  return result;
+};
+
+const getContacts = ({ firstName }) => {
+  const result = contactsData.filter(
+    contact => contact.firstName === firstName,
+  );
+  return result;
+};
 
 const getAllContacts = () => contactsData;
 
@@ -76,9 +86,10 @@ const addNewContact = ({ firstName, lastName, email, phone, address }) => {
 };
 
 const root = {
-  getContacts: getContacts,
-  getAllContacts: getAllContacts,
-  addNewContact: addNewContact,
+  getContactById,
+  getContacts,
+  getAllContacts,
+  addNewContact,
 };
 
 // Create an express server and a GraphQL endpoint
