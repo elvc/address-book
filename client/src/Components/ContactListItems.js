@@ -13,23 +13,6 @@ const fetch = createApolloFetch({
   uri: 'http://localhost:4000/graphql',
 });
 
-// const query = `
-//   query getContacts($firstName: String!) {
-//     getContacts(firstName: $firstName) {
-//       ...contactFields
-//     }
-//   }
-
-//   fragment contactFields on Contact {
-//     contactId
-//     firstName
-//     lastName
-//     email
-//     phone
-//     address
-//   }
-// `;
-
 const query = `
   query getContactById($contactId: Int!) {
     getContactById(contactId: $contactId) {
@@ -52,17 +35,6 @@ const setVariables = index => ({
 });
 
 class ContactDetails extends PureComponent {
-  //To-Do
-  // getContactByName = name => {
-  //   var splits = name.split(' ', 1);
-  //   fetch({
-  //     query,
-  //     variables,
-  //   }).then(res => {
-  //     console.log('res.data', res.data);
-  //   });
-  // };
-
   getContactById = index => {
     fetch({
       query,
@@ -73,8 +45,6 @@ class ContactDetails extends PureComponent {
   };
 
   handleClick = index => {
-    // this.getContactByName(event.target.innerText);
-    console.log('clicked index', index);
     this.getContactById(index);
   };
 

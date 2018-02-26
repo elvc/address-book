@@ -65,7 +65,6 @@ class App extends Component {
   }
 
   render() {
-    console.log(this.state);
     const { contacts } = this.state;
     return (
       <AppContainer>
@@ -86,10 +85,10 @@ class App extends Component {
 export default App;
 
 // Global style
-// eslint-disable-next-line
 injectGlobal`
   * {
     margin: 0;
     padding: 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   }
 `;
