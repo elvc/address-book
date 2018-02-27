@@ -21,12 +21,12 @@ const addressbook = (state = initialState, action) => {
     case 'UPDATE_CONTACT':
       return {
         ...state,
-        allContact: state.allContact.map(contact => {
-          if (contact.contactId === action.payload.contactId) {
-            return action.payload;
-          }
-          return contact;
-        }),
+        allContact: state.allContact.map(
+          contact =>
+            contact.contactId === action.payload.contactId
+              ? action.payload
+              : contact,
+        ),
       };
 
     case 'TOGGLE_EDIT_CONTACT':
