@@ -13,10 +13,26 @@ const addressbook = (state = initialState, action) => {
           ...action.payload,
         },
       };
-    case 'SET_EDIT_CONTACT':
+    case 'SET_ALL_CONTACTS':
       return {
         ...state,
-        isEditingContact: true,
+        allContact: action.payload,
+      };
+    case 'UPDATE_CONTACT':
+      return {
+        ...state,
+        allContact: state.allContact.map(contact => {
+          if (contact.contactId === action.payload.contactId) {
+            return action.payload;
+          }
+          return contact;
+        }),
+      };
+
+    case 'TOGGLE_EDIT_CONTACT':
+      return {
+        ...state,
+        isEditingContact: !state.isEditingContact,
       };
     default:
       return state;

@@ -8,6 +8,11 @@ const ContactListItems = styled.ul``;
 const ContactListItem = styled.li`
   list-style: none;
   padding: 0.5rem;
+  cursor: pointer;
+
+  &:hover {
+    background-color: lightgrey;
+  }
 `;
 
 const fetch = createApolloFetch({
@@ -57,7 +62,7 @@ class ContactDetails extends PureComponent {
   };
 
   render() {
-    const { contacts = [] } = this.props;
+    const { contacts } = this.props;
 
     return (
       <ContactListItems>
@@ -75,4 +80,6 @@ class ContactDetails extends PureComponent {
   }
 }
 
-export default connect()(ContactDetails);
+const mapStateToProps = state => ({ contacts: state.addressBook.allContact });
+
+export default connect(mapStateToProps)(ContactDetails);

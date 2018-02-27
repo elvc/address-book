@@ -37,13 +37,6 @@ const fetch = createApolloFetch({
 });
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      contacts: [],
-    };
-  }
-
   getAllContacts = () => {
     fetch({
       query: `{getAllContacts {
@@ -55,8 +48,9 @@ class App extends Component {
       phone
     }}`,
     }).then(res => {
-      this.setState({
-        contacts: res.data.getAllContacts,
+      this.props.dispatch({
+        type: 'SET_ALL_CONTACTS',
+        payload: res.data.getAllContacts,
       });
     });
   };
@@ -66,7 +60,6 @@ class App extends Component {
   }
 
   render() {
-    const { contacts } = this.state;
     return (
       <AppContainer>
         <AppHeaderWrapper>
@@ -74,9 +67,9 @@ class App extends Component {
         </AppHeaderWrapper>
         <AddressBookWrapper>
           <ContactListWrapper>
-            <ContactListItems contacts={contacts} />
+            <ContactListItems />
           </ContactListWrapper>
-          <ContactDetails contact={contacts[0]} />
+          <ContactDetails />
         </AddressBookWrapper>
       </AppContainer>
     );

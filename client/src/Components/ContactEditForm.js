@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import { Formik } from 'formik';
 import styled from 'styled-components';
+import { createApolloFetch } from 'apollo-fetch';
 
 const FormContainer = styled.div`
   padding: 1rem;
@@ -30,102 +32,146 @@ const SubmitButton = styled.button`
   color: white;
 `;
 
-const ContactEditForm = ({ firstName, lastName, email, phone, address }) => (
-  <FormContainer>
-    <h1>Edit Contact</h1>
-    {/*
-      The benefit of the render prop approach is that you have full access to React's
-      state, props, and composition model. Thus there is no need to map outer props
-      to values...you can just set the initial values, and if they depend on props / state
-      then--boom--you can directly access to props / state.
+const fetch = createApolloFetch({
+  uri: 'http://localhost:4000/graphql',
+});
 
-      The render prop accepts your inner form component, which you can define separately or inline
-      totally up to you:
-      - `<Formik render={props => <form>...</form>}>`
-      - `<Formik component={InnerForm}>`
-      - `<Formik>{props => <form>...</form>}</Formik>` (identical to as render, just written differently)
-    */}
-    <Formik
-      initialValues={{
-        firstName,
-        lastName,
-        email,
-        phone,
-        address,
-      }}
-      validate={values => {
-        // same as above, but feel free to move this into a class method now.
-        let errors = {};
-        if (!values.email) {
-          errors.email = 'Required';
-        } else if (
-          !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
+class ContactEditForm extends PureComponent {
+  updateContact = (
+    { firstName, lastName, email, phone, address },
+    contactId,
+  ) => {
+    fetch({
+      query: `mutation
+        updateContact(
+          $firstName: String!,
+          $lastName: String!,
+          $phone: String!,
+          $email: String!,
+          $address: String!,
+          $contactId: Int!
+        ){
+        updateContact(
+          firstName: $firstName,
+          lastName: $lastName,
+          contactId: $contactId,
+          phone: $phone,
+          email: $email,
+          address: $address
         ) {
-          errors.email = 'Invalid email address';
+          firstName
+          lastName
+          email
+          address
+          phone
+          contactId
         }
-        return errors;
-      }}
-      onSubmit={(
-        values,
-        { setSubmitting, setErrors /* setValues and other goodies */ },
-      ) => {}}
-      render={({
-        values,
-        errors,
-        touched,
-        handleChange,
-        handleBlur,
-        handleSubmit,
-        isSubmitting,
-      }) => (
-        <form onSubmit={handleSubmit}>
-          <StyledLabel htmlFor="firstName">First Name</StyledLabel>
-          <StyleInput
-            type="text"
-            name="firstName"
-            onChange={handleChange}
-            onBlur={handleBlur}
-            value={values.firstName}
-          />
-          <StyledLabel htmlFor="lastName">Last Name</StyledLabel>
-          <StyleInput
-            type="text"
-            name="lastName"
-            onChange={handleChange}
-            onBlur={handleBlur}
-            value={values.lastName}
-          />
-          <StyledLabel htmlFor="phone">Phone</StyledLabel>
-          <StyleInput
-            type="text"
-            name="phone"
-            onChange={handleChange}
-            onBlur={handleBlur}
-            value={values.phone}
-          />{' '}
-          <StyledLabel htmlFor="email">Email</StyledLabel>
-          <StyleInput
-            type="email"
-            name="email"
-            onChange={handleChange}
-            onBlur={handleBlur}
-            value={values.email}
-          />{' '}
-          <StyledLabel htmlFor="address">Address</StyledLabel>
-          <StyleInput
-            type="address"
-            name="address"
-            onChange={handleChange}
-            onBlur={handleBlur}
-            value={values.address}
-          />
-          <SubmitButton type="submit" disabled={isSubmitting}>
-            Submit
-          </SubmitButton>
-        </form>
-      )}
-    />
-  </FormContainer>
-);
+      }`,
+      variables: {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        phone: phone,
+        address: address,
+        contactId: contactId,
+      },
+    })
+      .then(res => {
+        this.props.dispatch({
+          type: 'UPDATE_CONTACT',
+          payload: res.data.updateContact,
+        });
+        this.props.dispatch({
+          type: 'SET_CURRENT_CONTACT',
+          payload: res.data.updateContact,
+        });
+        this.props.dispatch({ type: 'TOGGLE_EDIT_CONTACT' });
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  };
 
-export default ContactEditForm;
+  render() {
+    const {
+      firstName,
+      lastName,
+      email,
+      phone,
+      address,
+      contactId,
+      dispatch,
+    } = this.props;
+    return (
+      <FormContainer>
+        <h1>Edit Contact</h1>
+        <Formik
+          initialValues={{
+            firstName,
+            lastName,
+            email,
+            phone,
+            address,
+          }}
+          onSubmit={values => this.updateContact(values, contactId)}
+          render={({
+            values,
+            errors,
+            touched,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            isSubmitting,
+          }) => (
+            <form onSubmit={handleSubmit}>
+              <StyledLabel htmlFor="firstName">First Name</StyledLabel>
+              <StyleInput
+                type="text"
+                name="firstName"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.firstName}
+              />
+              <StyledLabel htmlFor="lastName">Last Name</StyledLabel>
+              <StyleInput
+                type="text"
+                name="lastName"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.lastName}
+              />
+              <StyledLabel htmlFor="phone">Phone</StyledLabel>
+              <StyleInput
+                type="text"
+                name="phone"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.phone}
+              />{' '}
+              <StyledLabel htmlFor="email">Email</StyledLabel>
+              <StyleInput
+                type="email"
+                name="email"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.email}
+              />{' '}
+              <StyledLabel htmlFor="address">Address</StyledLabel>
+              <StyleInput
+                type="address"
+                name="address"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.address}
+              />
+              <SubmitButton type="submit" disabled={isSubmitting}>
+                Submit
+              </SubmitButton>
+            </form>
+          )}
+        />
+      </FormContainer>
+    );
+  }
+}
+export default connect()(ContactEditForm);

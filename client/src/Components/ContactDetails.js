@@ -20,6 +20,7 @@ const EditButton = styled.button`
   height: 30px;
   border-radius: 30px;
   padding: 0.5rem 1rem;
+  cursor: pointer;
 `;
 
 const EmptyPlaceHolder = styled.div`
@@ -48,11 +49,11 @@ class ContactDetails extends PureComponent {
   }
 
   handleEditFormClick = () => {
-    this.setState({ isEditFormOpen: true });
+    this.props.dispatch({ type: 'TOGGLE_EDIT_CONTACT' });
   };
 
   render() {
-    const { contactDetails } = this.props;
+    const { contactDetails, isEditingContact } = this.props;
 
     return (
       <ContactDetailsContainer>
@@ -62,8 +63,9 @@ class ContactDetails extends PureComponent {
 
         {!Object.keys(contactDetails).length ? (
           <EmptyPlaceHolder>Please select a contact to start</EmptyPlaceHolder>
-        ) : this.state.isEditFormOpen ? (
+        ) : isEditingContact ? (
           <ContactEditForm
+            contactId={contactDetails.contactId}
             firstName={contactDetails.firstName}
             lastName={contactDetails.lastName}
             email={contactDetails.email}
@@ -98,6 +100,7 @@ class ContactDetails extends PureComponent {
 
 const mapStateToProps = state => ({
   contactDetails: state.addressBook.selectedContact,
+  isEditingContact: state.addressBook.isEditingContact,
 });
 
 export default connect(mapStateToProps)(ContactDetails);
