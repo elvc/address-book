@@ -8,8 +8,6 @@ import ContactDetails from '../src/Components/ContactDetails';
 const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 700px;
-  height: 500px;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -23,12 +21,15 @@ const AppHeader = styled.h1`
 
 const AddressBookWrapper = styled.div`
   display: flex;
+  width: 800px;
+  height: 600px;
   border: 1px grey solid;
 `;
 
 const ContactListWrapper = styled.div`
   padding: 1rem;
   border-right: 1px grey solid;
+  width: 300px;
 `;
 
 const fetch = createApolloFetch({

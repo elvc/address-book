@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import { createApolloFetch } from 'apollo-fetch';
 import styled from 'styled-components';
 
@@ -39,9 +40,16 @@ class ContactDetails extends PureComponent {
     fetch({
       query,
       variables: setVariables(index),
-    }).then(res => {
-      console.log('res', res);
-    });
+    })
+      .then(({ data }) => {
+        this.props.dispatch({
+          type: 'SET_CURRENT_CONTACT',
+          payload: data.getContactById,
+        });
+      })
+      .catch(err => {
+        console.error(err);
+      });
   };
 
   handleClick = index => {
@@ -50,6 +58,7 @@ class ContactDetails extends PureComponent {
 
   render() {
     const { contacts = [] } = this.props;
+
     return (
       <ContactListItems>
         {contacts &&
@@ -66,4 +75,4 @@ class ContactDetails extends PureComponent {
   }
 }
 
-export default ContactDetails;
+export default connect()(ContactDetails);
