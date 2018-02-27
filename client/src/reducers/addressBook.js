@@ -1,6 +1,6 @@
 const initialState = {
   selectedContact: {},
-  allContact: [],
+  allContacts: [],
   isEditingContact: false,
 };
 
@@ -16,12 +16,12 @@ const addressbook = (state = initialState, action) => {
     case 'SET_ALL_CONTACTS':
       return {
         ...state,
-        allContact: action.payload,
+        allContacts: action.payload,
       };
     case 'UPDATE_CONTACT':
       return {
         ...state,
-        allContact: state.allContact.map(
+        allContacts: state.allContacts.map(
           contact =>
             contact.contactId === action.payload.contactId
               ? action.payload

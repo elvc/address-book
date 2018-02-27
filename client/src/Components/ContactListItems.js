@@ -1,7 +1,18 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Fuse from 'fuse.js';
 import { createApolloFetch } from 'apollo-fetch';
 import styled from 'styled-components';
+
+const SearchInput = styled.input`
+  display: block;
+  width: 200px;
+  height: 30px;
+  color: grey;
+  margin-bottom: 1rem;
+  font-size: 0.8rem;
+  padding-left: 0.5rem;
+`;
 
 const ContactListItems = styled.ul``;
 
@@ -40,7 +51,49 @@ const setVariables = index => ({
   contactId: index,
 });
 
-class ContactDetails extends PureComponent {
+class ContactDetails extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      searchInput: '',
+      searchResult: this.props.allContacts,
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.allContacts !== this.props.allContacts) {
+      this.setState({ searchResult: nextProps.allContacts });
+    }
+  }
+
+  // Fire on any changes to the search input field. Also perform search here
+  handleKeyChange = event => {
+    const { allContacts } = this.props;
+    const options = {
+      shouldSort: true,
+      threshold: 0.1,
+      location: 0,
+      distance: 50,
+      minMatchCharLength: 1,
+      keys: ['firstName', 'lastName', 'phone', 'address', 'email'],
+    };
+    const fuse = new Fuse(allContacts, options);
+    let result;
+    if (event.target.value === '') {
+      result = allContacts;
+    } else {
+      result = fuse.search(event.target.value);
+    }
+
+    this.setState({
+      searchResult: result,
+      searchInput: event.target.value,
+    });
+  };
+
+  // to prevent resetting the form on "Enter"
+  handleSubmit = event => event.preventDefault();
+
   getContactById = index => {
     fetch({
       query,
@@ -62,24 +115,39 @@ class ContactDetails extends PureComponent {
   };
 
   render() {
-    const { contacts } = this.props;
-
+    const { searchResult } = this.state;
+    console.log('searchResult', searchResult);
+    console.log('this.props', this.props);
+    console.log('=====================');
+    console.log('=====================');
     return (
-      <ContactListItems>
-        {contacts &&
-          contacts.map(contact => (
-            <ContactListItem
-              key={contact.contactId}
-              onClick={this.handleClick.bind(this, contact.contactId)}
-            >
-              {contact.firstName} {contact.lastName}
-            </ContactListItem>
-          ))}
-      </ContactListItems>
+      <React.Fragment>
+        <form onSubmit={this.handleSubmit}>
+          <SearchInput
+            value={this.state.searchInput}
+            placeholder="Search"
+            onChange={this.handleKeyChange}
+            type="search"
+          />
+        </form>
+        <ContactListItems>
+          {searchResult &&
+            searchResult.map(contact => (
+              <ContactListItem
+                key={contact.contactId}
+                onClick={this.handleClick.bind(this, contact.contactId)}
+              >
+                {contact.firstName} {contact.lastName}
+              </ContactListItem>
+            ))}
+        </ContactListItems>
+      </React.Fragment>
     );
   }
 }
 
-const mapStateToProps = state => ({ contacts: state.addressBook.allContact });
+const mapStateToProps = state => ({
+  allContacts: state.addressBook.allContacts,
+});
 
 export default connect(mapStateToProps)(ContactDetails);
