@@ -77,13 +77,15 @@ class ContactEditForm extends PureComponent {
       },
     })
       .then(res => {
+        const updatedContact = res.data.updateContact;
+
         this.props.dispatch({
           type: 'UPDATE_CONTACT',
-          payload: res.data.updateContact,
+          payload: updatedContact,
         });
         this.props.dispatch({
           type: 'SET_CURRENT_CONTACT',
-          payload: res.data.updateContact,
+          payload: updatedContact,
         });
         this.props.dispatch({ type: 'TOGGLE_EDIT_CONTACT' });
       })
