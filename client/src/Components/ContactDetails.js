@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import ContactEditForm from './ContactEditForm';
 
+// Styled Components
 const ContactDetailsContainer = styled.div`
   display: flex;
   width: 100%;
@@ -15,12 +16,20 @@ const MenuBar = styled.div`
   padding: 1rem;
 `;
 
+const Label = styled.div`
+  display: inline-block;
+  font-weight: 600;
+  width: 100px;
+`;
+
 const EditButton = styled.button`
   width: 80px;
   height: 30px;
-  border-radius: 30px;
-  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  padding: 0 1rem;
+  font-size: 1rem;
   cursor: pointer;
+  background: lightgrey;
 `;
 
 const EmptyPlaceHolder = styled.div`
@@ -39,6 +48,12 @@ const ContactDetailsWrapper = styled.div`
 const ContactDetailsItem = styled.div`
   padding: 0.5rem;
 `;
+
+const Header = styled.h2`
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+`;
+// End of Styled Components
 
 class ContactDetails extends PureComponent {
   constructor(props) {
@@ -76,20 +91,20 @@ class ContactDetails extends PureComponent {
         ) : (
           contactDetails && (
             <ContactDetailsWrapper>
+              <Header>
+                {contactDetails.firstName} {contactDetails.lastName}
+              </Header>
               <ContactDetailsItem>
-                First Name: {contactDetails.firstName}
+                <Label>Phone:</Label>
+                {contactDetails.phone}
               </ContactDetailsItem>
               <ContactDetailsItem>
-                Last Name: {contactDetails.lastName}
+                <Label>Email:</Label>
+                {contactDetails.email}
               </ContactDetailsItem>
               <ContactDetailsItem>
-                Phone: {contactDetails.phone}
-              </ContactDetailsItem>
-              <ContactDetailsItem>
-                Email: {contactDetails.email}
-              </ContactDetailsItem>
-              <ContactDetailsItem>
-                Address: {contactDetails.address}
+                <Label>Address:</Label>
+                {contactDetails.address}
               </ContactDetailsItem>
             </ContactDetailsWrapper>
           )

@@ -6,6 +6,17 @@ import { createApolloFetch } from 'apollo-fetch';
 import styled from 'styled-components';
 import ContactDetails from './ContactDetails';
 
+// Styled Components
+const ContactListContainer = styled.div`
+  display: flex;
+`;
+
+const SideBarHeading = styled.div`
+  text-align: center;
+  margin: 1rem 0;
+  font-size: 1.2rem;
+`;
+
 const SearchInput = styled.input`
   -webkit-appearance: none;
   display: block;
@@ -14,11 +25,17 @@ const SearchInput = styled.input`
   color: grey;
   margin-bottom: 1rem;
   font-size: 0.8rem;
-  padding-left: 0.5rem;
+  padding-left: 1rem;
+  border-radius: 30px;
 `;
 
 const StyledLink = styled(Link)`
+  display: inline-block;
   text-decoration: none;
+  padding: 1rem;
+  &:visited {
+    color: black;
+  }
 `;
 
 const SideBar = styled.div`
@@ -27,25 +44,24 @@ const SideBar = styled.div`
   background: #ddd;
   padding: 1rem;
   flex: 1;
-`;
-
-const ContactListItem = styled.li`
-  list-style: none;
-  padding: 1rem 0.5rem;
-  border-bottom: 1px solid grey;
-
-  &:hover {
-    background-color: lightgrey;
-  }
+  border-radius: 5px 0 0 5px;
 `;
 
 const ContactDetailsWrapper = styled.div`
   width: 600px;
 `;
 
-const ContactListContainer = styled.div`
-  display: flex;
+const ContactListItem = styled.li`
+  list-style: none;
+  padding: 0;
+  border-bottom: 1px solid grey;
+
+  &:hover {
+    background-color: lightgrey;
+  }
 `;
+// End of Styled Components
+
 const fetch = createApolloFetch({
   uri: 'http://localhost:4000/graphql',
 });
@@ -76,10 +92,14 @@ class ContactListItems extends Component {
     super(props);
     this.state = {
       searchInput: '',
-      searchResult: this.props.allContacts,
+      searchResult: this.props.allContacts, // default to show all contact on sidebar
     };
   }
 
+  /**
+   * Prepare for getting the contact details when the user directly enter URL
+   * e.g. path = `/contact/4` => get the contact whose contactId === 4
+   */
   componentWillMount(nextProps) {
     const id = window.location.pathname.replace('/contact/', '');
     this.getContactById(id);
@@ -91,7 +111,8 @@ class ContactListItems extends Component {
     }
   }
 
-  // Fire on any changes to the search input field. Also perform search here
+  // Fire on any changes to the search input field
+  // Can search based on fields listed on 'keys' array
   handleKeyChange = event => {
     const { allContacts } = this.props;
     const options = {
@@ -147,6 +168,7 @@ class ContactListItems extends Component {
       <Router>
         <ContactListContainer>
           <SideBar>
+            <SideBarHeading>All Contacts</SideBarHeading>
             <form onSubmit={this.handleSubmit}>
               <SearchInput
                 value={this.state.searchInput}
@@ -164,7 +186,7 @@ class ContactListItems extends Component {
                       key={contact.contactId}
                       onClick={this.handleClick.bind(this, contact.contactId)}
                     >
-                      {contact.firstName} {contact.lastName}
+                      {contact.lastName}, {contact.firstName}
                     </StyledLink>
                   </ContactListItem>
                 ))}

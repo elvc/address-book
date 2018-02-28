@@ -4,8 +4,16 @@ import { Formik } from 'formik';
 import styled from 'styled-components';
 import { createApolloFetch } from 'apollo-fetch';
 
+// Styled Components
 const FormContainer = styled.div`
   padding: 1rem;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 6rem;
 `;
 
 const StyledLabel = styled.label`
@@ -31,6 +39,12 @@ const SubmitButton = styled.button`
   background: #4caf50;
   color: white;
 `;
+
+const EditHeader = styled.h3`
+  text-align: center;
+  margin-bottom: 1rem;
+`;
+// End of Styled Components
 
 const fetch = createApolloFetch({
   uri: 'http://localhost:4000/graphql',
@@ -106,7 +120,7 @@ class ContactEditForm extends PureComponent {
     } = this.props;
     return (
       <FormContainer>
-        <h1>Edit Contact</h1>
+        <EditHeader>Edit Contact</EditHeader>
         <Formik
           initialValues={{
             firstName,
@@ -125,7 +139,7 @@ class ContactEditForm extends PureComponent {
             handleSubmit,
             isSubmitting,
           }) => (
-            <form onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit}>
               <StyledLabel htmlFor="firstName">First Name</StyledLabel>
               <StyleInput
                 type="text"
@@ -169,7 +183,7 @@ class ContactEditForm extends PureComponent {
               <SubmitButton type="submit" disabled={isSubmitting}>
                 Submit
               </SubmitButton>
-            </form>
+            </Form>
           )}
         />
       </FormContainer>

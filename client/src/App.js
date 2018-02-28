@@ -16,12 +16,9 @@ const AppContainer = styled.div`
   transform: translate(-50%, -50%);
 `;
 
-const AppHeaderWrapper = styled.header`
-  width: 800px;
-`;
-
 const AppHeader = styled.h1`
   text-align: center;
+  width: 800px;
 `;
 
 const AddressBookWrapper = styled.div`
@@ -29,7 +26,9 @@ const AddressBookWrapper = styled.div`
   width: 800px;
   height: 600px;
   border: 1px grey solid;
+  border-radius: 5px;
 `;
+// End of Styled Components
 
 const fetch = createApolloFetch({
   uri: 'http://localhost:4000/graphql',
@@ -54,6 +53,7 @@ class App extends Component {
     });
   };
 
+  // generate all the routes based on however many contacts we have
   routesGenerator = allContacts => {
     const routes = [];
     allContacts.forEach(contact => {
@@ -71,6 +71,7 @@ class App extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    // need to generate routes and store to redux after we get all contacts
     if (nextProps.allContacts !== this.props.allContacts) {
       this.routesGenerator(nextProps.allContacts);
     }
@@ -79,9 +80,7 @@ class App extends Component {
   render() {
     return (
       <AppContainer>
-        <AppHeaderWrapper>
-          <AppHeader>Address Book</AppHeader>
-        </AppHeaderWrapper>
+        <AppHeader>Address Book</AppHeader>
         <AddressBookWrapper>
           <ContactListItems />
         </AddressBookWrapper>
