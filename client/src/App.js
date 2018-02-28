@@ -30,6 +30,7 @@ const ContactListWrapper = styled.div`
   padding: 1rem;
   border-right: 1px grey solid;
   width: 300px;
+  background: #ddd;
 `;
 
 const fetch = createApolloFetch({

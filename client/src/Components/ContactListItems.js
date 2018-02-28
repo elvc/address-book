@@ -5,6 +5,7 @@ import { createApolloFetch } from 'apollo-fetch';
 import styled from 'styled-components';
 
 const SearchInput = styled.input`
+  -webkit-appearance: none;
   display: block;
   width: 200px;
   height: 30px;
@@ -18,8 +19,9 @@ const ContactListItems = styled.ul``;
 
 const ContactListItem = styled.li`
   list-style: none;
-  padding: 0.5rem;
+  padding: 1rem 0.5rem;
   cursor: pointer;
+  border-bottom: 1px solid grey;
 
   &:hover {
     background-color: lightgrey;
@@ -116,10 +118,7 @@ class ContactDetails extends Component {
 
   render() {
     const { searchResult } = this.state;
-    console.log('searchResult', searchResult);
-    console.log('this.props', this.props);
-    console.log('=====================');
-    console.log('=====================');
+
     return (
       <React.Fragment>
         <form onSubmit={this.handleSubmit}>
