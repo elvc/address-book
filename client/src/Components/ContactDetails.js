@@ -54,7 +54,8 @@ class ContactDetails extends PureComponent {
 
   render() {
     const { contactDetails, isEditingContact } = this.props;
-
+    console.log('this.props', this.props);
+    console.log('=====================');
     return (
       <ContactDetailsContainer>
         <MenuBar>

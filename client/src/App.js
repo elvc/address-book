@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { createApolloFetch } from 'apollo-fetch';
 import styled, { injectGlobal } from 'styled-components';
 import ContactListItems from '../src/Components/ContactListItems';
@@ -7,6 +8,7 @@ import ContactDetails from '../src/Components/ContactDetails';
 // Styled-Components
 const AppContainer = styled.div`
   display: flex;
+  align-items: center;
   flex-direction: column;
   position: fixed;
   top: 50%;
@@ -14,7 +16,10 @@ const AppContainer = styled.div`
   transform: translate(-50%, -50%);
 `;
 
-const AppHeaderWrapper = styled.header``;
+const AppHeaderWrapper = styled.header`
+  width: 800px;
+`;
+
 const AppHeader = styled.h1`
   text-align: center;
 `;
@@ -24,13 +29,6 @@ const AddressBookWrapper = styled.div`
   width: 800px;
   height: 600px;
   border: 1px grey solid;
-`;
-
-const ContactListWrapper = styled.div`
-  padding: 1rem;
-  border-right: 1px grey solid;
-  width: 300px;
-  background: #ddd;
 `;
 
 const fetch = createApolloFetch({
@@ -56,8 +54,26 @@ class App extends Component {
     });
   };
 
+  routesGenerator = allContacts => {
+    const routes = [];
+    allContacts.forEach(contact => {
+      routes.push({
+        path: `/contact/${contact.contactId}`,
+        exact: true,
+        main: () => <ContactDetails />,
+      });
+    });
+    this.props.dispatch({ type: 'SET_ROUTES', payload: routes });
+  };
+
   componentDidMount() {
     this.getAllContacts();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.allContacts !== this.props.allContacts) {
+      this.routesGenerator(nextProps.allContacts);
+    }
   }
 
   render() {
@@ -67,17 +83,18 @@ class App extends Component {
           <AppHeader>Address Book</AppHeader>
         </AppHeaderWrapper>
         <AddressBookWrapper>
-          <ContactListWrapper>
-            <ContactListItems />
-          </ContactListWrapper>
-          <ContactDetails />
+          <ContactListItems />
         </AddressBookWrapper>
       </AppContainer>
     );
   }
 }
 
-export default App;
+const mapStateToProps = state => ({
+  allContacts: state.addressBook.allContacts,
+});
+
+export default connect(mapStateToProps)(App);
 
 // Global style
 injectGlobal`
@@ -85,5 +102,7 @@ injectGlobal`
     margin: 0;
     padding: 0;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    box-sizing: border-box;
+    width: 100%;
   }
 `;

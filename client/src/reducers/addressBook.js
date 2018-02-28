@@ -1,6 +1,7 @@
 const initialState = {
   selectedContact: {},
   allContacts: [],
+  routes: [],
   isEditingContact: false,
 };
 
@@ -17,6 +18,11 @@ const addressbook = (state = initialState, action) => {
       return {
         ...state,
         allContacts: action.payload,
+      };
+    case 'SET_ROUTES':
+      return {
+        ...state,
+        routes: action.payload,
       };
     case 'UPDATE_CONTACT':
       return {

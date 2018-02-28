@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { createApolloFetch } from 'apollo-fetch';
 import styled from 'styled-components';
+import ContactDetails from './ContactDetails';
 
 const SearchInput = styled.input`
   -webkit-appearance: none;
@@ -15,12 +17,21 @@ const SearchInput = styled.input`
   padding-left: 0.5rem;
 `;
 
-const ContactListItems = styled.ul``;
+const StyledLink = styled(Link)`
+  text-decoration: none;
+`;
+
+const SideBar = styled.div`
+  display: flex;
+  flex-direction: column;
+  background: #ddd;
+  padding: 1rem;
+  flex: 1;
+`;
 
 const ContactListItem = styled.li`
   list-style: none;
   padding: 1rem 0.5rem;
-  cursor: pointer;
   border-bottom: 1px solid grey;
 
   &:hover {
@@ -28,6 +39,13 @@ const ContactListItem = styled.li`
   }
 `;
 
+const ContactDetailsWrapper = styled.div`
+  width: 600px;
+`;
+
+const ContactListContainer = styled.div`
+  display: flex;
+`;
 const fetch = createApolloFetch({
   uri: 'http://localhost:4000/graphql',
 });
@@ -53,13 +71,18 @@ const setVariables = index => ({
   contactId: index,
 });
 
-class ContactDetails extends Component {
+class ContactListItems extends Component {
   constructor(props) {
     super(props);
     this.state = {
       searchInput: '',
       searchResult: this.props.allContacts,
     };
+  }
+
+  componentWillMount(nextProps) {
+    const id = window.location.pathname.replace('/contact/', '');
+    this.getContactById(id);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -118,35 +141,54 @@ class ContactDetails extends Component {
 
   render() {
     const { searchResult } = this.state;
+    const { routes } = this.props;
 
     return (
-      <React.Fragment>
-        <form onSubmit={this.handleSubmit}>
-          <SearchInput
-            value={this.state.searchInput}
-            placeholder="Search"
-            onChange={this.handleKeyChange}
-            type="search"
-          />
-        </form>
-        <ContactListItems>
-          {searchResult &&
-            searchResult.map(contact => (
-              <ContactListItem
-                key={contact.contactId}
-                onClick={this.handleClick.bind(this, contact.contactId)}
-              >
-                {contact.firstName} {contact.lastName}
-              </ContactListItem>
+      <Router>
+        <ContactListContainer>
+          <SideBar>
+            <form onSubmit={this.handleSubmit}>
+              <SearchInput
+                value={this.state.searchInput}
+                placeholder="Search"
+                onChange={this.handleKeyChange}
+                type="search"
+              />
+            </form>
+            <ul>
+              {searchResult &&
+                searchResult.map(contact => (
+                  <ContactListItem>
+                    <StyledLink
+                      to={`/contact/${contact.contactId}`}
+                      key={contact.contactId}
+                      onClick={this.handleClick.bind(this, contact.contactId)}
+                    >
+                      {contact.firstName} {contact.lastName}
+                    </StyledLink>
+                  </ContactListItem>
+                ))}
+            </ul>
+          </SideBar>
+          <ContactDetailsWrapper>
+            {routes.map((route, index) => (
+              <Route
+                key={index}
+                path={route.path}
+                exact={route.exact}
+                component={route.main}
+              />
             ))}
-        </ContactListItems>
-      </React.Fragment>
+          </ContactDetailsWrapper>
+        </ContactListContainer>
+      </Router>
     );
   }
 }
 
 const mapStateToProps = state => ({
   allContacts: state.addressBook.allContacts,
+  routes: state.addressBook.routes,
 });
 
-export default connect(mapStateToProps)(ContactDetails);
+export default connect(mapStateToProps)(ContactListItems);
