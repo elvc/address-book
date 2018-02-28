@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  withRouter,
+} from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { createApolloFetch } from 'apollo-fetch';
 import styled from 'styled-components';
@@ -9,6 +14,7 @@ import ContactDetails from './ContactDetails';
 // Styled Components
 const ContactListContainer = styled.div`
   display: flex;
+  height: 100%;
 `;
 
 const SideBarHeading = styled.div`
@@ -109,6 +115,10 @@ class ContactListItems extends Component {
     if (nextProps.allContacts !== this.props.allContacts) {
       this.setState({ searchResult: nextProps.allContacts });
     }
+    // to keep track of browser history
+    if (this.props.location.pathname !== nextProps.location.pathname) {
+      this.getContactById(nextProps.location.pathname.replace('/contact/', ''));
+    }
   }
 
   // Fire on any changes to the search input field
@@ -165,7 +175,7 @@ class ContactListItems extends Component {
     const { routes } = this.props;
 
     return (
-      <Router>
+      <div>
         <ContactListContainer>
           <SideBar>
             <SideBarHeading>All Contacts</SideBarHeading>
@@ -203,7 +213,7 @@ class ContactListItems extends Component {
             ))}
           </ContactDetailsWrapper>
         </ContactListContainer>
-      </Router>
+      </div>
     );
   }
 }
@@ -213,4 +223,4 @@ const mapStateToProps = state => ({
   routes: state.addressBook.routes,
 });
 
-export default connect(mapStateToProps)(ContactListItems);
+export default withRouter(connect(mapStateToProps)(ContactListItems));

@@ -32,7 +32,7 @@ const StyleInput = styled.input`
 `;
 
 const SubmitButton = styled.button`
-  width: 80px;
+  width: 100px;
   height: 30px;
   border-radius: 30px;
   padding: 0.5rem 1rem;

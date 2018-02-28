@@ -32,14 +32,6 @@ const EditButton = styled.button`
   background: lightgrey;
 `;
 
-const EmptyPlaceHolder = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-grow: 5;
-`;
-
 const ContactDetailsWrapper = styled.div`
   padding: 1rem;
   flex-grow: 5;
@@ -69,17 +61,14 @@ class ContactDetails extends PureComponent {
 
   render() {
     const { contactDetails, isEditingContact } = this.props;
-    console.log('this.props', this.props);
-    console.log('=====================');
+
     return (
       <ContactDetailsContainer>
         <MenuBar>
           <EditButton onClick={this.handleEditFormClick}>Edit</EditButton>
         </MenuBar>
 
-        {!Object.keys(contactDetails).length ? (
-          <EmptyPlaceHolder>Please select a contact to start</EmptyPlaceHolder>
-        ) : isEditingContact ? (
+        {isEditingContact ? (
           <ContactEditForm
             contactId={contactDetails.contactId}
             firstName={contactDetails.firstName}

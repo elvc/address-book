@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createApolloFetch } from 'apollo-fetch';
 import styled, { injectGlobal } from 'styled-components';
+import { BrowserRouter as Router } from 'react-router-dom';
 import ContactListItems from '../src/Components/ContactListItems';
 import ContactDetails from '../src/Components/ContactDetails';
-
+import history from './history';
 // Styled-Components
 const AppContainer = styled.div`
   display: flex;
@@ -27,6 +28,14 @@ const AddressBookWrapper = styled.div`
   height: 600px;
   border: 1px grey solid;
   border-radius: 5px;
+`;
+
+const EmptyPlaceHolder = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 5;
+  height: 100%;
 `;
 // End of Styled Components
 
@@ -55,11 +64,18 @@ class App extends Component {
 
   // generate all the routes based on however many contacts we have
   routesGenerator = allContacts => {
-    const routes = [];
+    const routes = [
+      {
+        path: `/`,
+        exact: true,
+        main: () => (
+          <EmptyPlaceHolder>Please select a contact to start</EmptyPlaceHolder>
+        ),
+      },
+    ];
     allContacts.forEach(contact => {
       routes.push({
         path: `/contact/${contact.contactId}`,
-        exact: true,
         main: () => <ContactDetails />,
       });
     });
@@ -82,7 +98,9 @@ class App extends Component {
       <AppContainer>
         <AppHeader>Address Book</AppHeader>
         <AddressBookWrapper>
-          <ContactListItems />
+          <Router history={history}>
+            <ContactListItems />
+          </Router>
         </AddressBookWrapper>
       </AppContainer>
     );
