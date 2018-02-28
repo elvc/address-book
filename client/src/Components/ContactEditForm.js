@@ -40,7 +40,7 @@ const SubmitButton = styled.button`
   color: white;
 `;
 
-const EditHeader = styled.h3`
+const EditHeader = styled.h2`
   text-align: center;
   margin-bottom: 1rem;
 `;

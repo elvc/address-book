@@ -33,7 +33,7 @@ const EditButton = styled.button`
 `;
 
 const ContactDetailsWrapper = styled.div`
-  padding: 1rem;
+  padding: 1rem 2rem;
   flex-grow: 5;
 `;
 
@@ -48,13 +48,6 @@ const Header = styled.h2`
 // End of Styled Components
 
 class ContactDetails extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isEditFormOpen: false,
-    };
-  }
-
   handleEditFormClick = () => {
     this.props.dispatch({ type: 'TOGGLE_EDIT_CONTACT' });
   };
