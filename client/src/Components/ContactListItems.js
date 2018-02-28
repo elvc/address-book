@@ -49,7 +49,7 @@ const SideBar = styled.div`
 `;
 
 const ContactDetailsWrapper = styled.div`
-  width: 600px;
+  width: 560px;
 `;
 
 const ContactListItem = styled.li`
