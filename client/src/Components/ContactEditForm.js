@@ -144,6 +144,7 @@ class ContactEditForm extends PureComponent {
               <StyleInput
                 type="text"
                 name="firstName"
+                id="firstName"
                 onChange={handleChange}
                 onBlur={handleBlur}
                 value={values.firstName}
@@ -152,6 +153,7 @@ class ContactEditForm extends PureComponent {
               <StyleInput
                 type="text"
                 name="lastName"
+                id="lastName"
                 onChange={handleChange}
                 onBlur={handleBlur}
                 value={values.lastName}
@@ -160,6 +162,7 @@ class ContactEditForm extends PureComponent {
               <StyleInput
                 type="text"
                 name="phone"
+                id="phone"
                 onChange={handleChange}
                 onBlur={handleBlur}
                 value={values.phone}
@@ -168,6 +171,7 @@ class ContactEditForm extends PureComponent {
               <StyleInput
                 type="email"
                 name="email"
+                id="email"
                 onChange={handleChange}
                 onBlur={handleBlur}
                 value={values.email}
@@ -176,6 +180,7 @@ class ContactEditForm extends PureComponent {
               <StyleInput
                 type="address"
                 name="address"
+                id="address"
                 onChange={handleChange}
                 onBlur={handleBlur}
                 value={values.address}
