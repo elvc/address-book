@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import ContactEditForm from './ContactEditForm';
 
@@ -53,7 +54,7 @@ class ContactDetails extends PureComponent {
   };
 
   render() {
-    const { contactDetails, isEditingContact } = this.props;
+    const { contactDetails, isEditingContact, dispatch } = this.props;
 
     return (
       <ContactDetailsContainer>
@@ -69,6 +70,7 @@ class ContactDetails extends PureComponent {
             email={contactDetails.email}
             phone={contactDetails.phone}
             address={contactDetails.address}
+            dispatch={dispatch}
           />
         ) : (
           contactDetails && (
@@ -95,6 +97,18 @@ class ContactDetails extends PureComponent {
     );
   }
 }
+
+ContactDetails.propTypes = {
+  contactDetails: PropTypes.shape({
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
+    email: PropTypes.string,
+    phone: PropTypes.string,
+    address: PropTypes.string,
+  }).isRequired,
+  isEditingContact: PropTypes.bool.isRequired,
+  dispatch: PropTypes.func.isRequired,
+};
 
 const mapStateToProps = state => ({
   contactDetails: state.addressBook.selectedContact,

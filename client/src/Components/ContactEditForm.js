@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import styled from 'styled-components';
 import { createApolloFetch } from 'apollo-fetch';
@@ -82,12 +82,12 @@ class ContactEditForm extends PureComponent {
         }
       }`,
       variables: {
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        phone: phone,
-        address: address,
-        contactId: contactId,
+        firstName,
+        lastName,
+        email,
+        phone,
+        address,
+        contactId,
       },
     })
       .then(res => {
@@ -116,7 +116,6 @@ class ContactEditForm extends PureComponent {
       phone,
       address,
       contactId,
-      dispatch,
     } = this.props;
     return (
       <FormContainer>
@@ -195,4 +194,15 @@ class ContactEditForm extends PureComponent {
     );
   }
 }
-export default connect()(ContactEditForm);
+
+ContactEditForm.propTypes = {
+  firstName: PropTypes.string.isRequired,
+  lastName: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired,
+  phone: PropTypes.string.isRequired,
+  address: PropTypes.string.isRequired,
+  contactId: PropTypes.number.isRequired,
+  dispatch: PropTypes.func.isRequired,
+};
+
+export default ContactEditForm;

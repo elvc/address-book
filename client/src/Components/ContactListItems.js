@@ -1,15 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {
-  BrowserRouter as Router,
-  Route,
-  Link,
-  withRouter,
-} from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { Route, Link, withRouter } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { createApolloFetch } from 'apollo-fetch';
 import styled from 'styled-components';
-import ContactDetails from './ContactDetails';
 
 // Styled Components
 const ContactListContainer = styled.div`
@@ -106,7 +101,7 @@ class ContactListItems extends Component {
    * Prepare for getting the contact details when the user directly enter URL
    * e.g. path = `/contact/4` => get the contact whose contactId === 4
    */
-  componentWillMount(nextProps) {
+  componentWillMount() {
     const id = window.location.pathname.replace('/contact/', '');
     this.getContactById(id);
   }
@@ -120,6 +115,22 @@ class ContactListItems extends Component {
       this.getContactById(nextProps.location.pathname.replace('/contact/', ''));
     }
   }
+
+  getContactById = index => {
+    fetch({
+      query,
+      variables: setVariables(index),
+    })
+      .then(({ data }) => {
+        this.props.dispatch({
+          type: 'SET_CURRENT_CONTACT',
+          payload: data.getContactById,
+        });
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  };
 
   // Fire on any changes to the search input field
   // Can search based on fields listed on 'keys' array
@@ -150,22 +161,6 @@ class ContactListItems extends Component {
   // to prevent resetting the form on "Enter"
   handleSubmit = event => event.preventDefault();
 
-  getContactById = index => {
-    fetch({
-      query,
-      variables: setVariables(index),
-    })
-      .then(({ data }) => {
-        this.props.dispatch({
-          type: 'SET_CURRENT_CONTACT',
-          payload: data.getContactById,
-        });
-      })
-      .catch(err => {
-        console.error(err);
-      });
-  };
-
   handleClick = index => {
     this.getContactById(index);
   };
@@ -190,7 +185,7 @@ class ContactListItems extends Component {
             <ul>
               {searchResult &&
                 searchResult.map(contact => (
-                  <ContactListItem>
+                  <ContactListItem key={contact.contactId}>
                     <StyledLink
                       to={`/contact/${contact.contactId}`}
                       key={contact.contactId}
@@ -217,6 +212,17 @@ class ContactListItems extends Component {
     );
   }
 }
+
+ContactListItems.propTypes = {
+  routes: PropTypes.arrayOf(
+    PropTypes.shape({
+      exact: PropTypes.bool,
+      path: PropTypes.string.isRequired,
+      main: PropTypes.func.isRequired,
+    }),
+  ).isRequired,
+  dispatch: PropTypes.func.isRequired,
+};
 
 const mapStateToProps = state => ({
   allContacts: state.addressBook.allContacts,

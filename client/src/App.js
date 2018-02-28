@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { createApolloFetch } from 'apollo-fetch';
 import styled, { injectGlobal } from 'styled-components';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { Router } from 'react-router-dom';
 import ContactListItems from '../src/Components/ContactListItems';
 import ContactDetails from '../src/Components/ContactDetails';
 import history from './history';
+
 // Styled-Components
 const AppContainer = styled.div`
   display: flex;
@@ -44,6 +46,17 @@ const fetch = createApolloFetch({
 });
 
 class App extends Component {
+  componentDidMount() {
+    this.getAllContacts();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    // need to generate routes and store to redux after we get all contacts
+    if (nextProps.allContacts !== this.props.allContacts) {
+      this.routesGenerator(nextProps.allContacts);
+    }
+  }
+
   getAllContacts = () => {
     fetch({
       query: `{getAllContacts {
@@ -82,17 +95,6 @@ class App extends Component {
     this.props.dispatch({ type: 'SET_ROUTES', payload: routes });
   };
 
-  componentDidMount() {
-    this.getAllContacts();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    // need to generate routes and store to redux after we get all contacts
-    if (nextProps.allContacts !== this.props.allContacts) {
-      this.routesGenerator(nextProps.allContacts);
-    }
-  }
-
   render() {
     return (
       <AppContainer>
@@ -107,13 +109,27 @@ class App extends Component {
   }
 }
 
+App.propTypes = {
+  allContacts: PropTypes.arrayOf(
+    PropTypes.shape({
+      firstName: PropTypes.string.isRequired,
+      lastName: PropTypes.string.isRequired,
+      email: PropTypes.string.isRequired,
+      phone: PropTypes.string.isRequired,
+      address: PropTypes.string.isRequired,
+      contactId: PropTypes.number.isRequired,
+    }),
+  ).isRequired,
+  dispatch: PropTypes.func.isRequired,
+};
+
 const mapStateToProps = state => ({
   allContacts: state.addressBook.allContacts,
 });
 
 export default connect(mapStateToProps)(App);
 
-// Global style
+// Global style for Styled-components
 injectGlobal`
   * {
     margin: 0;
