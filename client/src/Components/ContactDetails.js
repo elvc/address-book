@@ -57,13 +57,14 @@ class ContactDetails extends PureComponent {
     const { contactDetails, isEditingContact, dispatch } = this.props;
 
     return (
-      <ContactDetailsContainer>
+      <ContactDetailsContainer id="contact-details-container">
         <MenuBar>
           <EditButton onClick={this.handleEditFormClick}>Edit</EditButton>
         </MenuBar>
 
         {isEditingContact ? (
           <ContactEditForm
+            id="contact-edit-form"
             contactId={contactDetails.contactId}
             firstName={contactDetails.firstName}
             lastName={contactDetails.lastName}
@@ -74,7 +75,7 @@ class ContactDetails extends PureComponent {
           />
         ) : (
           contactDetails && (
-            <ContactDetailsWrapper>
+            <ContactDetailsWrapper id="contact-details-wrapper">
               <Header>
                 {contactDetails.firstName} {contactDetails.lastName}
               </Header>

@@ -97,7 +97,7 @@ class App extends Component {
 
   render() {
     return (
-      <AppContainer>
+      <AppContainer id="app-container">
         <AppHeader>Address Book</AppHeader>
         <AddressBookWrapper>
           <Router history={history}>
