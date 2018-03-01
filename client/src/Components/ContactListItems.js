@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Route, Link, withRouter } from 'react-router-dom';
+import { Route, Link, Switch, withRouter } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { createApolloFetch } from 'apollo-fetch';
 import styled from 'styled-components';
@@ -61,6 +61,14 @@ const ContactListItem = styled.li`
     background-color: lightgrey;
   }
 `;
+
+const NoMatchPlaceHolder = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 5;
+  height: 100%;
+`;
 // End of Styled Components
 
 export const fetch = createApolloFetch({
@@ -87,6 +95,12 @@ const query = `
 const setVariables = index => ({
   contactId: index,
 });
+
+const NoMatch = () => (
+  <NoMatchPlaceHolder>
+    URL is invalid. User does not exist. Please select a contact to start
+  </NoMatchPlaceHolder>
+);
 
 class ContactListItems extends Component {
   constructor(props) {
@@ -198,14 +212,17 @@ class ContactListItems extends Component {
             </ul>
           </SideBar>
           <ContactDetailsWrapper>
-            {routes.map((route, index) => (
-              <Route
-                key={index}
-                path={route.path}
-                exact={route.exact}
-                component={route.main}
-              />
-            ))}
+            <Switch>
+              {routes.map((route, index) => (
+                <Route
+                  key={index}
+                  path={route.path}
+                  exact={route.exact}
+                  component={route.main}
+                />
+              ))}
+              <Route component={NoMatch} />
+            </Switch>
           </ContactDetailsWrapper>
         </ContactListContainer>
       </div>
