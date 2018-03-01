@@ -105,15 +105,15 @@ ContactDetails.propTypes = {
     lastName: PropTypes.string,
     email: PropTypes.string,
     phone: PropTypes.string,
-    address: PropTypes.string
+    address: PropTypes.string,
   }).isRequired,
   isEditingContact: PropTypes.bool.isRequired,
-  dispatch: PropTypes.func.isRequired
+  dispatch: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
   contactDetails: state.addressBook.selectedContact,
-  isEditingContact: state.addressBook.isEditingContact
+  isEditingContact: state.addressBook.isEditingContact,
 });
 
 export default connect(mapStateToProps)(ContactDetails);
