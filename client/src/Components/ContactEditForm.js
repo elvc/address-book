@@ -118,7 +118,7 @@ class ContactEditForm extends PureComponent {
       contactId,
     } = this.props;
     return (
-      <FormContainer>
+      <FormContainer id="contact-edit-form">
         <EditHeader>Edit Contact</EditHeader>
         <Formik
           initialValues={{
@@ -138,7 +138,7 @@ class ContactEditForm extends PureComponent {
             handleSubmit,
             isSubmitting,
           }) => (
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit} id="edit-form">
               <StyledLabel htmlFor="firstName">First Name</StyledLabel>
               <StyleInput
                 type="text"

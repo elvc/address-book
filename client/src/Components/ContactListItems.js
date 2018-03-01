@@ -63,7 +63,7 @@ const ContactListItem = styled.li`
 `;
 // End of Styled Components
 
-const fetch = createApolloFetch({
+export const fetch = createApolloFetch({
   uri: 'http://localhost:4000/graphql',
 });
 
@@ -171,7 +171,7 @@ class ContactListItems extends Component {
 
     return (
       <div>
-        <ContactListContainer>
+        <ContactListContainer id="contatlist-container">
           <SideBar>
             <SideBarHeading>All Contacts</SideBarHeading>
             <form onSubmit={this.handleSubmit}>

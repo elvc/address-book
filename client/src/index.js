@@ -7,7 +7,7 @@ import addressBookApp from './reducers/';
 
 import registerServiceWorker from './registerServiceWorker';
 
-const store = createStore(
+export const store = createStore(
   addressBookApp,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
 );
